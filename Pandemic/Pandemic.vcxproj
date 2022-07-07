@@ -63,6 +63,8 @@
     <ClCompile Include="LoadingImage.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="MegaShotAnimation.cpp" />
+    <ClCompile Include="MultiplayerHUDRenderer.cpp" />
+    <ClCompile Include="MultiplayerPlayingState.cpp" />
     <ClCompile Include="ParticleOverlayRenderer.cpp" />
     <ClCompile Include="SetAnimation.cpp" />
     <ClCompile Include="CRC32.cpp" />
@@ -85,7 +87,7 @@
     <ClCompile Include="pb_common.c" />
     <ClCompile Include="pb_decode.c" />
     <ClCompile Include="pb_encode.c" />
-    <ClCompile Include="PlayingState.cpp" />
+    <ClCompile Include="ClassicPlayingState.cpp" />
     <ClCompile Include="RemovePuckRenderer.cpp" />
     <ClCompile Include="RemovePuckState.cpp" />
     <ClCompile Include="RoundData.cpp" />
@@ -146,6 +148,8 @@
     <ClInclude Include="LoadingImage.h" />
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="MegaShotAnimation.h" />
+    <ClInclude Include="MultiplayerHUDRenderer.h" />
+    <ClInclude Include="MultiplayerPlayingState.h" />
     <ClInclude Include="ParticleOverlayRenderer.h" />
     <ClInclude Include="SetAnimation.h" />
     <ClInclude Include="CRC32.h" />
@@ -458,7 +462,7 @@
     <ClInclude Include="pb_common.h" />
     <ClInclude Include="pb_decode.h" />
     <ClInclude Include="pb_encode.h" />
-    <ClInclude Include="PlayingState.h" />
+    <ClInclude Include="ClassicPlayingState.h" />
     <ClInclude Include="RemovePuckRenderer.h" />
     <ClInclude Include="RemovePuckState.h" />
     <ClInclude Include="RoundData.h" />

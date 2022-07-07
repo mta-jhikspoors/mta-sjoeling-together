@@ -156,9 +156,6 @@
     <ClCompile Include="GameStateMachine.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="PlayingState.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="SystemTestState.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -303,6 +300,15 @@
     <ClCompile Include="LoadingScreen.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="MultiplayerHUDRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="ClassicPlayingState.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiplayerPlayingState.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h">
@@ -426,9 +432,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="GameStateMachine.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayingState.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="SystemTestState.h">
@@ -1483,6 +1486,15 @@
     </ClInclude>
     <ClInclude Include="LoadingScreen.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiplayerHUDRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassicPlayingState.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiplayerPlayingState.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,8 @@
 GameStateMachine::GameStateMachine() :
 	data(nullptr),
 	titlestate(this),
-	playingstate(this),
+	classicplayingstate(this),
+	multiplayerplayingstate(this),
 	finishedstate(this),
 	intermissionstate(this),
 	systemteststate(this),

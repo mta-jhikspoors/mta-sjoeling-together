@@ -11,10 +11,10 @@ vector<GameDesc> GAMETYPES
 	GameDesc(GameType::Pro, "PROFESSIONAL", true, 30, 3),
 
 	// Same as classic "sjoelen" with professional game rules but a short version.
-	GameDesc(GameType::Short, "SHORT", true, 30, 1)
+	GameDesc(GameType::Short, "SHORT", true, 30, 1),
 
-	// Arcade style gives the player mini games to play.
-	//GameDesc(GameType::ArcadePro, "ARCADE PRO")
+	// A multiplayer mode of "sjoelen" with professional game rules.
+	GameDesc(GameType::Multiplayer, "MULTIPLAYER", true, 30, 2, true)
 };
 
 const GameDesc& GameDesc::Find(GameType type)

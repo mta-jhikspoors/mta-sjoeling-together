@@ -5,7 +5,8 @@
 #include "GameData.h"
 #include "TitleState.h"
 #include "SystemTestState.h"
-#include "PlayingState.h"
+#include "ClassicPlayingState.h"
+#include "MultiplayerPlayingState.h"
 #include "FinishedState.h"
 #include "IntermissionState.h"
 #include "RemovePuckState.h"
@@ -24,7 +25,8 @@ private:
 
 	// States
 	TitleState titlestate;
-	PlayingState playingstate;
+	ClassicPlayingState classicplayingstate;
+	MultiplayerPlayingState multiplayerplayingstate;
 	FinishedState finishedstate;
 	IntermissionState intermissionstate;
 	SystemTestState systemteststate;
@@ -47,7 +49,8 @@ public:
 
 	// States
 	TitleState* GetTitleState() { return &titlestate; }
-	PlayingState* GetPlayingState() { return &playingstate; }
+	ClassicPlayingState* GetClassicPlayingState() { return &classicplayingstate; }
+	MultiplayerPlayingState* GetMultiplayerPlayingState() { return &multiplayerplayingstate; }
 	FinishedState* GetFinishedState() { return &finishedstate; }
 	IntermissionState* GetIntermissionState() { return &intermissionstate; }
 	SystemTestState* GetSystemTestState() { return &systemteststate; }

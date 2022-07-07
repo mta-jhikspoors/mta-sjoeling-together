@@ -80,11 +80,17 @@ void IntermissionState::Update()
 		case IntermissionStep::ShowRound:
 			if(Clock::now() > nextsteptime)
 			{
+				GameData& gd = statemachine->GetData();
+
 				if(Random(0, 10) == 0)
 					Main::GetResources().GetSound("goodluck.wav").Play();
 				else
 					Main::GetResources().GetSound("go.wav").Play();
-				statemachine->ChangeState(statemachine->GetPlayingState());
+
+				if(gd.IsMultiplayer())
+					statemachine->ChangeState(statemachine->GetMultiplayerPlayingState());
+				else
+					statemachine->ChangeState(statemachine->GetClassicPlayingState());
 			}
 			break;
 	}

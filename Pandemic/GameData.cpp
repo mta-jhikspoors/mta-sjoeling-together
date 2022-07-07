@@ -9,6 +9,7 @@ GameData::GameData(GameType type) :
 	const GameDesc& gd = GameDesc::Find(type);
 	totalpucks = gd.pucks;
 	totalrounds = gd.rounds;
+	multiplayer = gd.multiplayer;
 }
 
 RoundData& GameData::GetRound(uint index)

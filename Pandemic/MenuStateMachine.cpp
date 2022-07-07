@@ -28,7 +28,8 @@ void MenuStateMachine::Show()
 	// Determine if we're in a game
 	IState* currentgamestate = Main::GetGame().GetCurrentState();
 	ingamemenu = (currentgamestate == Main::GetGame().GetIntermissionState()) ||
-	             (currentgamestate == Main::GetGame().GetPlayingState()) ||
+	             (currentgamestate == Main::GetGame().GetClassicPlayingState()) ||
+				 (currentgamestate == Main::GetGame().GetMultiplayerPlayingState()) ||
 	             (currentgamestate == Main::GetGame().GetRemovePuckState());
 
 	// Determine background dim level

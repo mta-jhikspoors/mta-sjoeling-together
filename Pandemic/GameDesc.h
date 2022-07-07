@@ -8,7 +8,8 @@ enum class GameType
 {
 	Casual = 0,
 	Pro = 1,
-	Short = 2
+	Short = 2,
+	Multiplayer = 3
 };
 
 struct GameDesc
@@ -28,13 +29,17 @@ struct GameDesc
 	// Game rounds
 	int rounds;
 
+	// Multiplayer
+	bool multiplayer;
+
 	// Constructor
-	GameDesc(GameType _id, String _name, bool _officialrules, int _pucks, int _rounds) :
+	GameDesc(GameType _id, String _name, bool _officialrules, int _pucks, int _rounds, bool _multiplayer = false) :
 		id(_id),
 		name(_name),
 		officialrules(_officialrules),
 		pucks(_pucks),
-		rounds(_rounds)
+		rounds(_rounds),
+		multiplayer(_multiplayer)
 	{
 	}
 

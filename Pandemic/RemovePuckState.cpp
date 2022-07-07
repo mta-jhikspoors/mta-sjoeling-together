@@ -46,6 +46,8 @@ void RemovePuckState::Update()
 
 bool RemovePuckState::HandleMessage(const IOModule_IOMessage& msg)
 {
+	GameData& gd = statemachine->GetData();
+
 	switch(msg.which_Content)
 	{
 		case IOModule_IOMessage_SensorBlocked_tag:
@@ -60,7 +62,10 @@ bool RemovePuckState::HandleMessage(const IOModule_IOMessage& msg)
 			if(!sensorblocked)
 			{
 				Main::GetResources().GetSound("continue.wav").Play();
-				statemachine->ChangeState(statemachine->GetPlayingState());
+				if(gd.IsMultiplayer())
+					statemachine->ChangeState(statemachine->GetMultiplayerPlayingState());
+				else
+					statemachine->ChangeState(statemachine->GetClassicPlayingState());
 			}
 			else
 			{
@@ -75,8 +80,16 @@ bool RemovePuckState::HandleMessage(const IOModule_IOMessage& msg)
 		case IOModule_IOMessage_StartSlide_tag:
 			if(!sensorblocked)
 			{
-				statemachine->ChangeState(statemachine->GetPlayingState());
-				return statemachine->GetPlayingState()->HandleMessage(msg);
+				if(gd.IsMultiplayer())
+				{
+					statemachine->ChangeState(statemachine->GetMultiplayerPlayingState());
+					return statemachine->GetMultiplayerPlayingState()->HandleMessage(msg);
+				}
+				else
+				{
+					statemachine->ChangeState(statemachine->GetClassicPlayingState());
+					return statemachine->GetClassicPlayingState()->HandleMessage(msg);
+				}
 			}
 			else
 			{

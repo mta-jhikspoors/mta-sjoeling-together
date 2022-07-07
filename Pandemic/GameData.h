@@ -27,6 +27,9 @@ private:
 	// Total pucks
 	int totalpucks;
 
+	// Is it multiplayer?
+	bool multiplayer;
+
 public:
 
 	// Constructorage
@@ -36,6 +39,7 @@ public:
 	GameType GetType() const { return type; }
 	int NumRounds() const { return rounds.size(); }
 	int GetTotalRounds() const { return totalrounds; }
+	bool IsMultiplayer() const { return multiplayer; }
 	RoundData& CurrentRound() { return rounds.back(); }
 	RoundData& GetRound(uint index);
 	const RoundData& GetRound(uint index) const;

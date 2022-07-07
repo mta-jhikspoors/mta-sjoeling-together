@@ -2,7 +2,7 @@
 #include "IState.h"
 #include "IMessageHandler.h"
 #include "ParticleOverlayRenderer.h"
-#include "ClassicHUDRenderer.h"
+#include "MultiplayerHUDRenderer.h"
 #include "RemovePuckRenderer.h"
 #include "SetAnimation.h"
 #include "GreatShotAnimation.h"
@@ -16,14 +16,14 @@
 class GameStateMachine;
 
 // The game is played in this state
-class PlayingState : public virtual IState, public virtual IMessageHandler
+class MultiplayerPlayingState : public virtual IState, public virtual IMessageHandler
 {
 private:
 
 	// Members
 	GameStateMachine* statemachine;
 	ParticleOverlayRenderer particlesoverlay;
-	ClassicHUDRenderer hud;
+	MultiplayerHUDRenderer hud;
 	SetAnimation setanimation;
 	GreatShotAnimation greatshotanimation;
 	HotShotAnimation hotshotanimation;
@@ -55,7 +55,7 @@ private:
 
 public:
 
-	PlayingState(GameStateMachine* _statemachine);
+	MultiplayerPlayingState(GameStateMachine* _statemachine);
 
 	// Methods
 	virtual void Enter() override final;

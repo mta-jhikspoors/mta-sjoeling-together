@@ -1,4 +1,4 @@
-#include "PlayingState.h"
+#include "MultiplayerPlayingState.h"
 #include "GameStateMachine.h"
 #include "Main.h"
 #include "MenuStateMachine.h"
@@ -6,7 +6,7 @@
 #define NUM_SHOT_SOUNDS				3
 #define ANI_START_DELAY				ch::milliseconds(300)
 
-PlayingState::PlayingState(GameStateMachine* _statemachine) :
+MultiplayerPlayingState::MultiplayerPlayingState(GameStateMachine* _statemachine) :
 	statemachine(_statemachine),
 	hud(particlesoverlay),
 	setanimation(particlesoverlay),
@@ -35,7 +35,7 @@ PlayingState::PlayingState(GameStateMachine* _statemachine) :
 	comboanimations.push_back(&unstoppableanimation);
 }
 
-void PlayingState::Enter()
+void MultiplayerPlayingState::Enter()
 {
 	// TODO: Temporary fix. Remove when renderers are fixed so that menu can stay open.
 	Main::GetMenu().Hide();
@@ -44,7 +44,7 @@ void PlayingState::Enter()
 	scoringenabled = true;
 	throwcomboscored = false;
 	combocount = 0;
-	while(!aniqueue.empty())
+	while (!aniqueue.empty())
 		aniqueue.pop();
 	anistarttime = TimePoint();
 	throwfinishtime = TimePoint();
@@ -59,7 +59,7 @@ void PlayingState::Enter()
 	Main::GetGraphics().ClearRenderers();
 	Main::GetGraphics().AddRenderer(&statemachine->GetBackground());
 	Main::GetGraphics().AddRenderer(&hud);
-	for(auto ca : comboanimations)
+	for (auto ca : comboanimations)
 		Main::GetGraphics().AddRenderer(ca);
 	Main::GetGraphics().AddRenderer(&setanimation);
 	Main::GetGraphics().AddRenderer(&particlesoverlay);
@@ -69,20 +69,20 @@ void PlayingState::Enter()
 	Main::GetButtons().SetAllGameLEDs(false, false, false, true);
 }
 
-void PlayingState::Leave()
+void MultiplayerPlayingState::Leave()
 {
 }
 
-void PlayingState::Update()
+void MultiplayerPlayingState::Update()
 {
 	TimePoint now = Clock::now();
 	GameData& gd = statemachine->GetData();
 
 	// Time to show the animiation(s)?
-	if(ch::IsTimeSet(anistarttime) && (now >= anistarttime))
+	if (ch::IsTimeSet(anistarttime) && (now >= anistarttime))
 	{
 		anistarttime = TimePoint();
-		if(!aniqueue.empty())
+		if (!aniqueue.empty())
 		{
 			showinganimations = true;
 			hud.Hide();
@@ -91,10 +91,10 @@ void PlayingState::Update()
 	}
 
 	// Animation done?
-	if(showinganimations && aniqueue.front()->HasFinished())
+	if (showinganimations && aniqueue.front()->HasFinished())
 	{
 		aniqueue.pop();
-		if(!aniqueue.empty())
+		if (!aniqueue.empty())
 		{
 			// Play the next animation
 			aniqueue.front()->Start();
@@ -108,7 +108,7 @@ void PlayingState::Update()
 	}
 
 	// Finishing a throw?
-	if(ch::IsTimeSet(throwfinishtime) && (now >= throwfinishtime))
+	if (ch::IsTimeSet(throwfinishtime) && (now >= throwfinishtime))
 	{
 		RoundData& rd = gd.CurrentRound();
 
@@ -117,22 +117,22 @@ void PlayingState::Update()
 
 		// When this was our last puck for this round, don't count any more scores. This is to
 		// prevent accedential scoring when the player is quick to pick up the pucks from the board.
-		if(rd.pucksthrown == rd.startpucks)
+		if (rd.pucksthrown == rd.startpucks)
 			scoringenabled = false;
 
 		// When no puck was scored during this throw, then reset the combo
-		if(!throwcomboscored)
+		if (!throwcomboscored)
 			combocount = 0;
 
 		throwcomboscored = false;
 	}
 
 	// Finishing a round?
-	if(ch::IsTimeSet(roundfinishtime) && (now >= roundfinishtime))
+	if (ch::IsTimeSet(roundfinishtime) && (now >= roundfinishtime))
 	{
 		// Round is finished
 		GameData& gd = statemachine->GetData();
-		if(gd.CalculateNextRoundPucks(nullptr) > 0)
+		if (gd.CalculateNextRoundPucks(nullptr) > 0)
 		{
 			// Next round
 			statemachine->GetScreenMelt().Begin();
@@ -149,178 +149,178 @@ void PlayingState::Update()
 	}
 }
 
-bool PlayingState::HandleMessage(const IOModule_IOMessage& msg)
+bool MultiplayerPlayingState::HandleMessage(const IOModule_IOMessage& msg)
 {
 	GameData& gd = statemachine->GetData();
-	switch(msg.which_Content)
+	switch (msg.which_Content)
 	{
-		case IOModule_IOMessage_RemovePuck_tag:
+	case IOModule_IOMessage_RemovePuck_tag:
+	{
+		// Remove the puck from the game
+		RoundData& rd = gd.CurrentRound();
+		rd.pucksremoved++;
+		UpdateDisplay();
+
+		Main::GetResources().GetSound("error.wav").Play();
+
+		if (!ch::IsTimeSet(roundfinishtime))
 		{
-			// Remove the puck from the game
-			RoundData& rd = gd.CurrentRound();
-			rd.pucksremoved++;
+			statemachine->GetRemovePuckState()->SetSensorBlocked(false);
+			statemachine->ChangeState(statemachine->GetRemovePuckState());
+		}
+
+		return true;
+	}
+
+	case IOModule_IOMessage_SensorBlocked_tag:
+	{
+		Main::GetResources().GetSound("error.wav").Play();
+
+		if (!ch::IsTimeSet(roundfinishtime))
+		{
+			statemachine->GetRemovePuckState()->SetSensorBlocked(true);
+			statemachine->ChangeState(statemachine->GetRemovePuckState());
+		}
+
+		return true;
+	}
+
+	case IOModule_IOMessage_StartSlide_tag:
+	{
+		// Here comes a puck!
+		RoundData& rd = gd.CurrentRound();
+		if (rd.pucksthrown < rd.startpucks)
+		{
+			// Output the speed in the console for fun
+			uint32_t speed = msg.Content.StartSlide.Speed;
+			//double kmh = static_cast<double>(speed) * 0.0036;
+			//std::cout << "Speed: " << kmh << " km/h" << std::endl;
+
+			// Add the throw to the game data
+			rd.speeds[rd.pucksthrown] = speed;
+			rd.pucksthrown++;
+
+			// Start our timing
+			throwfinishtime = Clock::now() + ch::milliseconds(slidetimeout);
+			if (rd.pucksthrown == rd.startpucks)
+				roundfinishtime = Clock::now() + ch::milliseconds(roundtimeout);
+
+			PlayShotSound();
 			UpdateDisplay();
-
-			Main::GetResources().GetSound("error.wav").Play();
-
-			if(!ch::IsTimeSet(roundfinishtime))
-			{
-				statemachine->GetRemovePuckState()->SetSensorBlocked(false);
-				statemachine->ChangeState(statemachine->GetRemovePuckState());
-			}
-
-			return true;
 		}
-
-		case IOModule_IOMessage_SensorBlocked_tag:
+		else
 		{
-			Main::GetResources().GetSound("error.wav").Play();
-
-			if(!ch::IsTimeSet(roundfinishtime))
-			{
-				statemachine->GetRemovePuckState()->SetSensorBlocked(true);
-				statemachine->ChangeState(statemachine->GetRemovePuckState());
-			}
-
-			return true;
+			// Can't throw a puck when you have none left
+			scoringenabled = false;
 		}
+		return true;
+	}
 
-		case IOModule_IOMessage_StartSlide_tag:
+	case IOModule_IOMessage_GateScore_tag:
+	{
+		if (scoringenabled)
 		{
-			// Here comes a puck!
+			int gateindex = msg.Content.GateScore.Gate - 1;
+
+			// Status before the score
+			bool gatesrequired[GAME_GATES];
+			gd.GetGatesNeededForSet(gatesrequired, true);
+			int prevsets = gd.CalculateSets();
+			bool prevreq = gatesrequired[gateindex];
+
+			// Apply the score
 			RoundData& rd = gd.CurrentRound();
-			if(rd.pucksthrown < rd.startpucks)
+			rd.gatepucks[gateindex]++;
+
+			// Check if cheating
+			if (rd.PucksOnTable() < 0)
+				gd.SetIsCheated();
+
+			// Check result
+			int newsets = gd.CalculateSets();
+			KillShotSounds();
+			Main::GetResources().GetSound("score.wav").Play();
+			if (newsets != prevsets)
 			{
-				// Output the speed in the console for fun
-				uint32_t speed = msg.Content.StartSlide.Speed;
-				//double kmh = static_cast<double>(speed) * 0.0036;
-				//std::cout << "Speed: " << kmh << " km/h" << std::endl;
+				hud.ScoreRequiredGate(gateindex);
+				CheckComboAchievement();
 
-				// Add the throw to the game data
-				rd.speeds[rd.pucksthrown] = speed;
-				rd.pucksthrown++;
+				// A new set is completed!
+				hud.ScoreSet();
+				setanimation.SetIndex(newsets);
+				aniqueue.push(&setanimation);
 
-				// Start our timing
-				throwfinishtime = Clock::now() + ch::milliseconds(slidetimeout);
-				if(rd.pucksthrown == rd.startpucks)
-					roundfinishtime = Clock::now() + ch::milliseconds(roundtimeout);
-
-				PlayShotSound();
-				UpdateDisplay();
+				if (!showinganimations)
+					anistarttime = Clock::now() + ANI_START_DELAY;
+			}
+			else if (prevreq)
+			{
+				// Scored in a gate we needed
+				hud.ScoreRequiredGate(gateindex);
+				CheckComboAchievement();
 			}
 			else
 			{
-				// Can't throw a puck when you have none left
-				scoringenabled = false;
-			}
-			return true;
-		}
+				// Scored in a gate we don't need
+				hud.ScoreGate(gateindex);
 
-		case IOModule_IOMessage_GateScore_tag:
-		{
-			if(scoringenabled)
-			{
-				int gateindex = msg.Content.GateScore.Gate - 1;
-
-				// Status before the score
-				bool gatesrequired[GAME_GATES];
-				gd.GetGatesNeededForSet(gatesrequired, true);
-				int prevsets = gd.CalculateSets();
-				bool prevreq = gatesrequired[gateindex];
-
-				// Apply the score
-				RoundData& rd = gd.CurrentRound();
-				rd.gatepucks[gateindex]++;
-
-				// Check if cheating
-				if(rd.PucksOnTable() < 0)
-					gd.SetIsCheated();
-
-				// Check result
-				int newsets = gd.CalculateSets();
-				KillShotSounds();
-				Main::GetResources().GetSound("score.wav").Play();
-				if(newsets != prevsets)
-				{
-					hud.ScoreRequiredGate(gateindex);
+				if (easycombos)
 					CheckComboAchievement();
-
-					// A new set is completed!
-					hud.ScoreSet();
-					setanimation.SetIndex(newsets);
-					aniqueue.push(&setanimation);
-
-					if(!showinganimations)
-						anistarttime = Clock::now() + ANI_START_DELAY;
-				}
-				else if(prevreq)
-				{
-					// Scored in a gate we needed
-					hud.ScoreRequiredGate(gateindex);
-					CheckComboAchievement();
-				}
-				else
-				{
-					// Scored in a gate we don't need
-					hud.ScoreGate(gateindex);
-
-					if(easycombos)
-						CheckComboAchievement();
-				}
-
-				UpdateDisplay();
 			}
-			return true;
+
+			UpdateDisplay();
 		}
+		return true;
+	}
 
-		case IOModule_IOMessage_CancelButtonPressed_tag:
-			Main::GetMenu().Show();
-			return true;
+	case IOModule_IOMessage_CancelButtonPressed_tag:
+		Main::GetMenu().Show();
+		return true;
 
-		default:
-			return false;
+	default:
+		return false;
 	}
 }
 
-void PlayingState::UpdateDisplay()
+void MultiplayerPlayingState::UpdateDisplay()
 {
 	GameData& gd = statemachine->GetData();
 	RoundData& rd = gd.CurrentRound();
 	bool gatesrequired[GAME_GATES];
 
-	hud.SetRound(rd.index + 1);
+	hud.SetScorePlayer1(rd.index + 1);
 	hud.SetPucks(rd.startpucks - rd.pucksthrown);
-	hud.SetScore(gd.CalculateScore());
+	hud.SetScorePlayer2(gd.CalculateScore());
 	gd.GetGatesNeededForSet(gatesrequired, true);
 	hud.SetRequiredGates(gatesrequired);
 }
 
-void PlayingState::PlayShotSound()
+void MultiplayerPlayingState::PlayShotSound()
 {
 	// Play random shot sound
 	int rndindex = Random(1, NUM_SHOT_SOUNDS);
 	Main::GetResources().GetSound("shot" + String::From(rndindex) + ".wav").Play();
 }
 
-void PlayingState::KillShotSounds()
+void MultiplayerPlayingState::KillShotSounds()
 {
-	for(int i = 1; i <= NUM_SHOT_SOUNDS; i++)
+	for (int i = 1; i <= NUM_SHOT_SOUNDS; i++)
 		Main::GetResources().GetSound("shot" + String::From(i) + ".wav").Stop();
 }
 
-void PlayingState::CheckComboAchievement()
+void MultiplayerPlayingState::CheckComboAchievement()
 {
 	throwcomboscored = true;
 	combocount++;
-	if(combocount > 1)
+	if (combocount > 1)
 	{
 		int comboindex = combocount - 2;
-		if(comboindex < static_cast<int>(comboanimations.size()))
+		if (comboindex < static_cast<int>(comboanimations.size()))
 			aniqueue.push(comboanimations[comboindex]);
 		else
 			aniqueue.push(comboanimations.back());
 
-		if(!showinganimations)
+		if (!showinganimations)
 			anistarttime = Clock::now() + ANI_START_DELAY;
 	}
 }
