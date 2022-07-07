@@ -79,6 +79,9 @@ IOModuleLink::IOModuleLink(const Configuration& cfg) :
 	SendSettings(false);
 	SetNormalMode();
 	SetButtonLights(false, false, false, false);
+
+	// Init keep alive
+	lastkeepalive = Clock::now();
 }
 
 IOModuleLink::~IOModuleLink()

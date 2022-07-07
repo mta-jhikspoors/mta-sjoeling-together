@@ -8,7 +8,8 @@
 MenuStateMachine::MenuStateMachine() :
 	topmenustate(this),
 	optionsstate(this),
-	selectgamestate(this)
+	selectgamestate(this),
+	audiomodestate(this)
 {
 }
 

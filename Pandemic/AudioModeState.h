@@ -1,48 +1,39 @@
 #pragma once
 #include "IState.h"
 #include "IMessageHandler.h"
-#include "Sound.h"
-#include "IntEditorRenderer.h"
 #include "MenuItemRenderer.h"
 #include "HorizontalMenuRenderer.h"
+#include "Sound.h"
 
 class MenuStateMachine;
 
-enum class OptionsMenuItems
+enum class AudioModeItems
 {
-	Volume,
-	Brightness,
-	SystemTest,
-	AudioMode
+	Classic,
+	Meme
 };
 
-class OptionsMenuState : public virtual IState, public virtual IMessageHandler
+class AudioModeState : public virtual IState, public virtual IMessageHandler
 {
 private:
 
 	MenuStateMachine* statemachine;
 	HorizontalMenuRenderer horizontalrenderer;
-	IntEditorRenderer volumeitem;
-	IntEditorRenderer brightnessitem;
-	MenuItemRenderer testitem;
-	MenuItemRenderer audioitem;
-	vector<OptionsMenuItems> itemslist;
+	MenuItemRenderer classicitem;
+	MenuItemRenderer memeitem;
+	vector<AudioModeItems> itemslist;
 	const Sound& woosh;
 	const Sound& cancel;
 	const Sound& selectsound;
 	const Sound& editsound;
 	int currentitem;
-	bool isediting;
 
 	// Methods
 	void ActivateItem(int index);
-	void ChangeItemValue(int index, int direction);
-	bool HandleMessageEditing(const IOModule_IOMessage& msg);
-	bool HandleMessageMenu(const IOModule_IOMessage& msg);
 
 public:
 
-	OptionsMenuState(MenuStateMachine* _statemachine);
+	AudioModeState(MenuStateMachine* _statemachine);
 
 	virtual void Enter() override final;
 	virtual void Leave() override final;

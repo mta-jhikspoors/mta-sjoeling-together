@@ -6,6 +6,7 @@
 #include "TopMenuState.h"
 #include "OptionsMenuState.h"
 #include "SelectGameState.h"
+#include "AudioModeState.h"
 
 class MenuStateMachine final : public virtual StateMachine, virtual public IMessageHandler
 {
@@ -18,6 +19,7 @@ private:
 	TopMenuState topmenustate;
 	OptionsMenuState optionsstate;
 	SelectGameState selectgamestate;
+	AudioModeState audiomodestate;
 	bool ingamemenu;
 
 public:
@@ -32,6 +34,7 @@ public:
 	TopMenuState* GetTopMenuState() { return &topmenustate; }
 	OptionsMenuState* GetOptionsState() { return &optionsstate; }
 	SelectGameState* GetSelectGameState() { return &selectgamestate; }
+	AudioModeState* GetAudioModeState() { return &audiomodestate; }
 
 	// Methods
 	virtual bool HandleMessage(const IOModule_IOMessage& msg) override;

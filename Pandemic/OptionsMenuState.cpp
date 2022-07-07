@@ -10,6 +10,7 @@ OptionsMenuState::OptionsMenuState(MenuStateMachine* _statemachine) :
 	volumeitem("VOLUME:", "%", VALUE_SPACING),
 	brightnessitem("BRIGHTNESS:", "%", VALUE_SPACING),
 	testitem("SYSTEM TEST"),
+	audioitem("AUDIO MODE"),
 	woosh(Main::GetResources().GetSound("woosh1.wav")),
 	cancel(Main::GetResources().GetSound("cancel.wav")),
 	selectsound(Main::GetResources().GetSound("select.wav")),
@@ -24,15 +25,17 @@ void OptionsMenuState::Enter()
 	// Set up the items which we show
 	horizontalrenderer.Clear();
 	itemslist.clear();
+	horizontalrenderer.AddItem(&audioitem);
 	horizontalrenderer.AddItem(&volumeitem);
 	horizontalrenderer.AddItem(&brightnessitem);
+	itemslist.push_back(OptionsMenuItems::AudioMode);
 	itemslist.push_back(OptionsMenuItems::Volume);
 	itemslist.push_back(OptionsMenuItems::Brightness);
 	if(!statemachine->IsInGame())
 	{
 		horizontalrenderer.AddItem(&testitem);
 		itemslist.push_back(OptionsMenuItems::SystemTest);
-	}
+	}	
 
 	horizontalrenderer.SetAtIndex(0);
 	horizontalrenderer.ShowArrows(true);
@@ -152,6 +155,11 @@ void OptionsMenuState::ActivateItem(int index)
 			selectsound.Play();
 			statemachine->Hide();
 			Main::GetGame().ChangeState(Main::GetGame().GetSystemTestState());
+			break;
+
+		case OptionsMenuItems::AudioMode:
+			selectsound.Play();
+			statemachine->ChangeState(statemachine->GetAudioModeState());
 			break;
 
 		default:
