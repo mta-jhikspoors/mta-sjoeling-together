@@ -6,9 +6,9 @@
 // allows us to change the order of the game types or remove a game type.
 enum class GameType
 {
-	Casual = 0,
-	Pro = 1,
-	Short = 2
+	//Casual = 0,
+	Pro = 0,
+	Short = 1
 };
 
 struct GameDesc

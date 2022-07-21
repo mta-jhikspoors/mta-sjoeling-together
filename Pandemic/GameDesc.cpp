@@ -4,7 +4,7 @@ vector<GameDesc> GAMETYPES
 {
 	// The casual game is just plain "sjoelen" with relaxed game rules.
 	// Puck may be halfway through the gate to score.
-	GameDesc(GameType::Casual, "CASUAL", false, 30, 3),
+	//GameDesc(GameType::Casual, "CASUAL", false, 30, 3),
 
 	// Same as classic "sjoelen" but with professional game rules.
 	// Puck must be fully inside the gate to score.
