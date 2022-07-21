@@ -73,6 +73,9 @@ Resources::Resources()
 	boldbits = &GetFont("boldbits.fnt");
 	boldbitslarge = &GetFont("boldbitslarge.fnt");
 	smallest = &GetFont("smallest.fnt");
+
+	// Set audio prefix
+	audioPrefix = "";
 }
 
 Resources::~Resources()
@@ -123,22 +126,32 @@ const Font& Resources::GetFont(const char* filename) const
 
 const Sound& Resources::GetSound(const char* filename) const
 {
-	auto result = sounds.find(std::string(filename));
+	auto result = sounds.find(audioPrefix + std::string(filename));
 	if(result == sounds.cend())
 	{
-		std::cout << "Sound with filename '" << filename << "' was not found." << std::endl;
-		FAIL("File not found");
+		auto result_ = sounds.find(std::string(filename));
+		if (result_ == sounds.cend())
+		{
+			std::cout << "Sound with filename '" << filename << "' was not found." << std::endl;
+			FAIL("File not found");
+		}
+		return *(result_->second);
 	}
 	return *(result->second);
 }
 
 const Sound& Resources::GetMusic(const char* filename) const
 {
-	auto result = music.find(std::string(filename));
+	auto result = music.find(audioPrefix + std::string(filename));
 	if(result == music.cend())
 	{
-		std::cout << "Music with filename '" << filename << "' was not found." << std::endl;
-		FAIL("File not found");
+		auto result_ = music.find(std::string(filename));
+		if (result_ == music.cend())
+		{
+			std::cout << "Music with filename '" << filename << "' was not found." << std::endl;
+			FAIL("File not found");
+		}
+		return *(result_->second);
 	}
 	return *(result->second);
 }
@@ -163,4 +176,9 @@ void Resources::CopyFilenamesByExtension(vector<String>& input, vector<String>& 
 		if(String::ToLower(File::GetExtension(filename)) == extlowercase)
 			output.push_back(filename);
 	}
+}
+
+void Resources::SetAudioPrefix(std::string prefix)
+{
+	this->audioPrefix = prefix;
 }

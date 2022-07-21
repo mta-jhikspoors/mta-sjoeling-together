@@ -11,7 +11,7 @@
 
 HighscoreManager::HighscoreManager(const Configuration& config) :
 	scorespath(config.GetString("General.HighscoresPath", "")),
-	gametype(GameType::Casual),
+	gametype(GameType::Pro),
 	interval(static_cast<ScoresPeriod>(config.GetInt("General.PeriodicScoresInterval", 0))),
 	highscores(static_cast<size_t>(config.GetInt("General.MaxHighScores", 10))),
 	periodscores(static_cast<size_t>(config.GetInt("General.MaxPeriodicScores", 10)))

@@ -51,6 +51,8 @@ private:
 	void UpdateDisplay();
 	void PlayShotSound();
 	void KillShotSounds();
+	void PlayScoreSound();
+	void KillScoreSounds();
 	void CheckComboAchievement();
 
 public:

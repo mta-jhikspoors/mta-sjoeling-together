@@ -303,6 +303,9 @@
     <ClCompile Include="LoadingScreen.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="AudioModeState.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h">
@@ -1483,6 +1486,9 @@
     </ClInclude>
     <ClInclude Include="LoadingScreen.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioModeState.h">
+      <Filter>Menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

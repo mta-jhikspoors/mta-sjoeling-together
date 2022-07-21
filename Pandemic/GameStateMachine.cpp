@@ -51,7 +51,10 @@ void GameStateMachine::PlayOrRepeatTitleMusic()
 	if(titlemusicrepeat || !titlemusicchecked)
 	{
 		if(!titlemusic.IsPlaying())
+		{
+			titlemusic = Main::GetResources().GetMusic("title.mp3");
 			titlemusic.Play(true);
+		}
 
 		titlemusicchecked = true;
 	}

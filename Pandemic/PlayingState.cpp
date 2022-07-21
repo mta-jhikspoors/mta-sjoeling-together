@@ -4,6 +4,7 @@
 #include "MenuStateMachine.h"
 
 #define NUM_SHOT_SOUNDS				3
+#define NUM_SCORE_SOUNDS			3
 #define ANI_START_DELAY				ch::milliseconds(300)
 
 PlayingState::PlayingState(GameStateMachine* _statemachine) :
@@ -239,7 +240,7 @@ bool PlayingState::HandleMessage(const IOModule_IOMessage& msg)
 				// Check result
 				int newsets = gd.CalculateSets();
 				KillShotSounds();
-				Main::GetResources().GetSound("score.wav").Play();
+				PlayScoreSound();
 				if(newsets != prevsets)
 				{
 					hud.ScoreRequiredGate(gateindex);
@@ -306,6 +307,19 @@ void PlayingState::KillShotSounds()
 {
 	for(int i = 1; i <= NUM_SHOT_SOUNDS; i++)
 		Main::GetResources().GetSound("shot" + String::From(i) + ".wav").Stop();
+}
+
+void PlayingState::PlayScoreSound()
+{
+	// Play random shot sound
+	int rndindex = Random(1, NUM_SCORE_SOUNDS);
+	Main::GetResources().GetSound("score" + String::From(rndindex) + ".wav").Play();
+}
+
+void PlayingState::KillScoreSounds()
+{
+	for (int i = 1; i <= NUM_SCORE_SOUNDS; i++)
+		Main::GetResources().GetSound("score" + String::From(i) + ".wav").Stop();
 }
 
 void PlayingState::CheckComboAchievement()

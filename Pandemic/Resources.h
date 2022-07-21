@@ -30,6 +30,9 @@ private:
 	const Font* boldbitslarge;
 	const Font* smallest;
 
+	// Audio prefix
+	std::string audioPrefix;
+
 	// Methods
 	void CopyFilenamesByExtension(vector<String>& input, vector<String>& output, const char* extension);
 
@@ -49,5 +52,8 @@ public:
 	const Font& BoldBits() { return *boldbits; }
 	const Font& BoldBitsLarge() { return *boldbitslarge; }
 	const Font& Smallest() { return *smallest; }
+
+	// Audio prefix
+	void SetAudioPrefix(std::string prefix);
 };
 
